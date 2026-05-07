@@ -3,7 +3,7 @@ services:
     name: ml-obs-api
     env: python
     plan: free
-    buildCommand: pip install -r requirements.txt
+    buildCommand: pip install -r requirements-render.txt
     startCommand: bash -c "API_PORT=$PORT python -m ingestion.api"
     envVars:
       - key: PYTHONPATH
@@ -28,7 +28,7 @@ services:
     name: ml-obs-dashboard
     env: python
     plan: free
-    buildCommand: pip install -r requirements.txt
+    buildCommand: pip install -r requirements-render.txt
     startCommand: streamlit run dashboard/app.py --server.port $PORT --server.address 0.0.0.0
     envVars:
       - key: PYTHONPATH

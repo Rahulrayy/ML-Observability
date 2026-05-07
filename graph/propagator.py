@@ -1,18 +1,22 @@
 from pathlib import Path
 from typing import Optional
 
-import torch
+try:
+    import torch
+    from .gnn import PipelineGNN
+    from .train import build_graph_data
+    _TORCH_AVAILABLE = True
+except ImportError:
+    _TORCH_AVAILABLE = False
 
 from .dag import PipelineDAG
-from .gnn import PipelineGNN
-from .train import build_graph_data
 
 
 class RiskPropagator:
     def __init__(self, dag: PipelineDAG, model_path: Optional[str] = None, in_channels: int = 8):
         self._dag = dag
-        self._model: Optional[PipelineGNN] = None
-        if model_path and Path(model_path).exists():
+        self._model = None
+        if _TORCH_AVAILABLE and model_path and Path(model_path).exists():
             self._model = PipelineGNN(in_channels=in_channels)
             self._model.load_state_dict(torch.load(model_path, map_location="cpu"))
             self._model.eval()
