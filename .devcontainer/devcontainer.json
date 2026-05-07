@@ -1,0 +1,27 @@
+{
+  "name": "ML Observability Platform",
+  "image": "mcr.microsoft.com/devcontainers/python:3.11",
+
+  "features": {
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {},
+    "ghcr.io/devcontainers/features/github-cli:1": {}
+  },
+
+  "forwardPorts": [8000, 8501],
+  "portsAttributes": {
+    "8000": {
+      "label": "Ingestion API",
+      "onAutoForward": "silent"
+    },
+    "8501": {
+      "label": "Dashboard",
+      "onAutoForward": "openBrowser"
+    }
+  },
+
+  "postCreateCommand": "pip install -r requirements.txt && cp .env.example .env && echo 'Done - fill in GROQ_API_KEY in .env then run: docker-compose up -d postgres redis'",
+
+  "remoteEnv": {
+    "PYTHONPATH": "/workspaces/${localWorkspaceFolderBasename}"
+  }
+}
