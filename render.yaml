@@ -1,0 +1,61 @@
+services:
+  - type: web
+    name: ml-obs-api
+    env: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: python -m ingestion.api
+    envVars:
+      - key: PYTHONPATH
+        value: .
+      - key: API_HOST
+        value: 0.0.0.0
+      - key: API_PORT
+        fromEnv: PORT
+      - key: DATABASE_URL
+        fromDatabase:
+          name: ml-obs-db
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          name: ml-obs-redis
+          type: redis
+          property: connectionString
+      - key: API_KEY
+        value: dev_key_change_in_prod
+      - key: GROQ_API_KEY
+        sync: false
+
+  - type: web
+    name: ml-obs-dashboard
+    env: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: streamlit run dashboard/app.py --server.port $PORT --server.address 0.0.0.0
+    envVars:
+      - key: PYTHONPATH
+        value: .
+      - key: DATABASE_URL
+        fromDatabase:
+          name: ml-obs-db
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          name: ml-obs-redis
+          type: redis
+          property: connectionString
+      - key: API_KEY
+        value: dev_key_change_in_prod
+      - key: GROQ_API_KEY
+        sync: false
+
+  - type: redis
+    name: ml-obs-redis
+    plan: free
+    ipAllowList: []
+
+databases:
+  - name: ml-obs-db
+    databaseName: mlobs
+    user: mlobs
+    plan: free
