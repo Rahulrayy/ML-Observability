@@ -87,6 +87,19 @@ def require_api_key(key: str = Security(api_key_header)) -> str:
     return key
 
 
+def _seed_if_empty(database_url: str) -> None:
+    from sqlalchemy import create_engine, text
+    engine = create_engine(database_url)
+    with engine.connect() as conn:
+        count = conn.execute(text("SELECT COUNT(*) FROM inference_logs")).scalar()
+    engine.dispose()
+    if count == 0:
+        print("[startup] Database empty - seeding demo data...")
+        from demo.setup_demo import seed
+        seed(database_url)
+        print("[startup] Demo data seeded.")
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     global writer, redis_client, _async_engine, _async_sessions
@@ -98,6 +111,11 @@ async def lifespan(app: FastAPI):
     _async_sessions = async_sessionmaker(_async_engine, expire_on_commit=False)
     asyncio.create_task(writer.run_flush_loop())
     drift_task = asyncio.create_task(_drift_loop(DATABASE_URL))
+
+    # Auto-seed demo data on first boot (Render has no shell on free tier)
+    loop = asyncio.get_event_loop()
+    await loop.run_in_executor(None, _seed_if_empty, DATABASE_URL)
+
     yield
     drift_task.cancel()
     await redis_client.aclose()
