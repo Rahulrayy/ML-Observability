@@ -30,7 +30,6 @@ The differentiating contribution is a **GNN-based pipeline DAG anomaly detector*
 - [The Demo Sequence](#the-demo-sequence)
 - [Repository Structure](#repository-structure)
 - [Tech Stack](#tech-stack)
-- [Deployment Options](#deployment-options)
 - [Known Limitations](#known-limitations)
 
 ---
@@ -865,54 +864,7 @@ ml-observability-platform/
 
 ---
 
-## Deployment Options
 
-### Option 1 - Local + ngrok (Best for Interviews)
-
-Run the stack locally and tunnel it to a public URL with one command. No account or credit card needed beyond a free ngrok signup.
-
-```bash
-# Start the stack
-docker-compose up -d postgres redis
-python -m ingestion.api &
-python demo/setup_demo.py
-streamlit run dashboard/app.py &
-
-# Expose dashboard publicly
-ngrok http 8501
-```
-
-ngrok prints a URL like `https://abc123.ngrok.io`. Share it during the interview. The tunnel is live as long as your machine is running.
-
-### Option 2 - Render (Always-On, No Credit Card)
-
-Deploy the full stack from GitHub to Render's free tier. Includes managed PostgreSQL and Redis.
-
-1. Push this repo to GitHub
-2. Create a new Web Service on `render.com` pointing at the repo
-3. Add a PostgreSQL instance and a Redis instance from the Render dashboard
-4. Set environment variables (`GROQ_API_KEY`, `DATABASE_URL`, `REDIS_URL`, `API_KEY`)
-5. Set the start command to `python -m ingestion.api`
-6. Deploy a second service for the dashboard with start command `streamlit run dashboard/app.py`
-
-Free tier services sleep after 15 minutes of inactivity and take ~30 seconds to wake. Sufficient for a portfolio link.
-
-### Option 3 - Azure for Students (Always-On, No Credit Card)
-
-If you have a university email, Azure for Students gives $100 free credit with no credit card required. Enough to run a VM with Docker Compose for months.
-
-```bash
-# On the Azure VM after provisioning
-git clone https://github.com/yourusername/ml-observability-platform
-cd ml-observability-platform
-cp .env.example .env   # fill in keys
-docker-compose up -d
-python demo/setup_demo.py
-```
-
-Open ports 8000 and 8501 in the VM's network security group. Best option for a permanent always-on URL.
-
----
 
 ## Known Limitations
 
