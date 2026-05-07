@@ -1,0 +1,30 @@
+nodes:
+  - id: raw_data
+    type: data_source
+    description: "Raw customer transaction data"
+
+  - id: feature_engineering
+    type: transform
+    description: "Feature computation (recency, frequency, monetary)"
+
+  - id: feature_store
+    type: data_source
+    description: "Pre-computed features from feature store"
+
+  - id: churn_model_v2
+    type: model
+    description: "XGBoost churn prediction model"
+
+  - id: churn_scores
+    type: output
+    description: "Churn probability scores served to downstream systems"
+
+edges:
+  - from: raw_data
+    to: feature_engineering
+  - from: feature_engineering
+    to: feature_store
+  - from: feature_store
+    to: churn_model_v2
+  - from: churn_model_v2
+    to: churn_scores

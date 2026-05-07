@@ -1,0 +1,21 @@
+defaults:
+  ks_p_value: 0.05
+  psi_warning: 0.1
+  psi_critical: 0.25
+  chi2_p_value: 0.05
+  kl_divergence_warning: 0.1
+  kl_divergence_critical: 0.3
+
+features:
+  customer_tenure_days:
+    ks_p_value: 0.05
+    psi_warning: 0.1
+    psi_critical: 0.2
+  transaction_frequency:
+    ks_p_value: 0.01
+    psi_warning: 0.15
+    psi_critical: 0.3
+  avg_transaction_value:
+    ks_p_value: 0.05
+    psi_warning: 0.1
+    psi_critical: 0.25

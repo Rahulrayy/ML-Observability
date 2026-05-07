@@ -1,0 +1,23 @@
+channels:
+  slack:
+    enabled: false
+    webhook_url: "${SLACK_WEBHOOK_URL}"
+    min_severity: WARNING
+
+  email:
+    enabled: false
+    smtp_host: "${SMTP_HOST}"
+    smtp_port: 587
+    from: "mlobs-alerts@example.com"
+    to:
+      - "team@example.com"
+    min_severity: CRITICAL
+
+  dashboard:
+    enabled: true
+    min_severity: INFO
+
+  webhook:
+    enabled: false
+    url: "${ALERT_WEBHOOK_URL}"
+    min_severity: WARNING
